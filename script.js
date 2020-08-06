@@ -6,6 +6,7 @@ const modal = document.querySelector(".lightbox");
 const overlay = document.querySelector(".lightbox__content");
 const bigPhoto = document.querySelector(".lightbox__image");
 const closeButton = document.querySelector(".lightbox__button");
+let i;
 
 // Перебор и вставка изображений из массива обьектов
 const photo = photos.reduce(
@@ -43,15 +44,22 @@ function checkClick(event) {
   openModalWindow(target);
 }
 
-function openModalWindow(target) {
+function openModalWindow() {
   modal.classList.add("is-open");
   window.addEventListener("keydown", closeModalThroughtEscape);
-  getLinkOnBigImage(target);
+  window.addEventListener("keydown", nextOrPreviousPhoto);
+  getLinkOnBigImage();
+  currentPhoto();
 }
 
-function getLinkOnBigImage(target) {
-  bigPhoto.src = target.dataset.source;
-  bigPhoto.alt = target.dataset.alt;
+function currentPhoto() {
+  const array = Array.from(event.target.parentElement.parentNode.parentElement.children);
+  i = array.indexOf(event.target.parentElement.parentElement);
+}
+
+function getLinkOnBigImage() {
+  bigPhoto.src = event.target.dataset.source;
+  bigPhoto.alt = event.target.dataset.alt;
   closeModalWindow();
 }
 
@@ -79,9 +87,41 @@ function closeModalThroughtBackdrop(event) {
   }
 }
 
-function closeModalThroughtEscape(event) {
+function closeModalThroughtEscape() {
   if (event.code === "Escape") {
     deleteClassIsOpen();
     cleanPhotoSource();
   }
+}
+
+function nextOrPreviousPhoto() {
+  if (event.code === "ArrowRight") {
+    nextPhoto();
+  } else if (event.code === "ArrowLeft") {
+    prevPhoto();
+  } else return;
+}
+
+function nextPhoto() {
+  if (i >= 0 && i < 8) {
+    ++i;
+    cleanPhotoSource();
+    sourceForNextOrPrevPhoto();
+  }
+}
+
+function prevPhoto() {
+  if (i > 0 && i <= 8) {
+    --i;
+    cleanPhotoSource();
+    sourceForNextOrPrevPhoto();
+  }
+}
+
+function sourceForNextOrPrevPhoto() {
+  const path =
+    event.target.parentElement.parentElement.children[i].lastElementChild.lastElementChild
+      .dataset;
+  bigPhoto.src = path.source;
+  bigPhoto.alt = path.alt;
 }

@@ -137,3 +137,37 @@ body {
 .lightbox__button:focus {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+/* .ul-practice {
+  list-style: none;
+  display: flex;
+  justify-content: start;
+  margin: 0 auto;
+}
+
+.li_image {
+  margin: 15px;
+  justify-content: start;
+  align-items: center;
+}
+.text-and-button {
+  display: flex;
+  flex-wrap: wrap;
+  width: 800px;
+  list-style: none;
+  margin: 0 auto;
+}
+
+.li {
+  margin: 15px;
+  width: 60px;
+}
+
+.button {
+  cursor: pointer;
+  width: 60px;
+  height: 25px;
+  border-radius: 10px;
+  background-color: tomato;
+  border: none;
+} */
