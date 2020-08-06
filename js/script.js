@@ -1,4 +1,4 @@
-import photos from "./js/gallery-items.js";
+import photos from "./gallery-items.js";
 
 // Получение ссылок на DOM
 const gallery = document.querySelector(".js-gallery");
