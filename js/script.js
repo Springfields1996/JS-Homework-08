@@ -2,17 +2,20 @@ import photos from "./gallery-items.js";
 
 // Получение ссылок на DOM
 const gallery = document.querySelector(".js-gallery");
-const modal = document.querySelector(".lightbox");
+const modal = gallery.nextElementSibling;
 const overlay = document.querySelector(".lightbox__content");
-const bigPhoto = document.querySelector(".lightbox__image");
+const bigPhoto = overlay.firstElementChild;
 const closeButton = document.querySelector(".lightbox__button");
 let i;
+let array;
+console.log(overlay);
 
 // Перебор и вставка изображений из массива обьектов
-const photo = photos.reduce(
-  (acc, photo) =>
-    acc +
-    `<li class="gallery__item">
+function makeArrayFromPhotos(someArray) {
+  let photo = someArray.reduce(
+    (acc, photo) =>
+      acc +
+      `<li class="gallery__item">
   <a
     class="gallery__link"
     href="${photo.original}"
@@ -25,9 +28,12 @@ const photo = photos.reduce(
     />
   </a>
 </li>`,
-  ""
-);
-gallery.insertAdjacentHTML("afterbegin", photo);
+    ""
+  );
+  return photo;
+}
+
+gallery.insertAdjacentHTML("afterbegin", makeArrayFromPhotos(photos));
 
 // Делегирование
 
@@ -38,22 +44,18 @@ overlay.addEventListener("click", closeModalThroughtBackdrop);
 function checkClick(event) {
   event.preventDefault();
   const target = event.target;
-  if (target.nodeName !== "IMG") {
-    return;
-  }
+  if (target.nodeName !== "IMG") return;
   openModalWindow(target);
 }
 
 function openModalWindow() {
   modal.classList.add("is-open");
-  window.addEventListener("keydown", closeModalThroughtEscape);
-  window.addEventListener("keydown", nextOrPreviousPhoto);
   getLinkOnBigImage();
   currentPhoto();
 }
 
 function currentPhoto() {
-  const array = Array.from(event.target.parentElement.parentNode.parentElement.children);
+  array = Array.from(event.target.parentElement.parentNode.parentElement.children);
   i = array.indexOf(event.target.parentElement.parentElement);
 }
 
@@ -64,9 +66,7 @@ function getLinkOnBigImage() {
 }
 
 function closeModalWindow() {
-  if (event.target.nodeName !== "BUTTON") {
-    return;
-  }
+  if (event.target.nodeName !== "BUTTON") return;
   deleteClassIsOpen();
   cleanPhotoSource();
 }
@@ -80,7 +80,8 @@ function cleanPhotoSource() {
   bigPhoto.alt = "";
 }
 
-function closeModalThroughtBackdrop(event) {
+function closeModalThroughtBackdrop() {
+  console.log(event.target, event.currentTarget);
   if (event.target === event.currentTarget) {
     deleteClassIsOpen();
     cleanPhotoSource();
@@ -103,16 +104,16 @@ function nextOrPreviousPhoto() {
 }
 
 function nextPhoto() {
-  if (i >= 0 && i < 8) {
-    ++i;
+  if (i >= 0 && i < array.length - 1) {
+    i++;
     cleanPhotoSource();
     sourceForNextOrPrevPhoto();
   }
 }
 
 function prevPhoto() {
-  if (i > 0 && i <= 8) {
-    --i;
+  if (i > 0 && i <= array.length - 1) {
+    i--;
     cleanPhotoSource();
     sourceForNextOrPrevPhoto();
   }
@@ -125,3 +126,6 @@ function sourceForNextOrPrevPhoto() {
   bigPhoto.src = path.source;
   bigPhoto.alt = path.alt;
 }
+
+window.addEventListener("keydown", closeModalThroughtEscape);
+window.addEventListener("keydown", nextOrPreviousPhoto);
